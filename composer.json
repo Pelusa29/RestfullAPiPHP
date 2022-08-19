@@ -1,0 +1,16 @@
+{
+    "name": "ubuntu/restfullapi",
+    "description": "restullyapi",
+    "autoload": {
+        "psr-4": {
+            "Ubuntu\\Restfullapi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ernesto",
+            "email": "eroman.rojas@gmail.com"
+        }
+    ],
+    "require": {}
+}
