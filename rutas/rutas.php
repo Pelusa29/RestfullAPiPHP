@@ -2,9 +2,9 @@
 //get url
 $arrayRutas = explode("/", $_SERVER['REQUEST_URI']);
 
-echo "<pre>";echo print_r($arrayRutas); echo "</pre>";
+//echo "<pre>";echo "Fase1:".print_r($arrayRutas); echo "</pre>";
 
-if (count(array_filter($arrayRutas)) == 2) {
+if (count(array_filter($arrayRutas)) == 1) {
     /*================================================================
     Cuando no se hace ningunna petición al api
     ==================================================================*/
@@ -19,36 +19,61 @@ if (count(array_filter($arrayRutas)) == 2) {
     /*================================================================
         Cuando pasamos solo un índice en el array $arrayRutas
     ==================================================================*/
-    if (count(array_filter($arrayRutas))== 3) {
-
+    
+    if (count(array_filter($arrayRutas)) == 2) {
+        //echo "<pre>";echo "Fase 2:".print_r(count(array_filter($arrayRutas))); echo "</pre>";
         /*================================================================
             Cuando se hace peticionens desde cursos
         ==================================================================*/
-            
-            $caso = array_filter($arrayRutas)[3];
         
-        if($caso == "cursos"){
-            $json = array(
-                #detalle
-                "detalle" => "Estas en la vista cursos"
-            );
+        if(array_filter($arrayRutas)[2] == "cursos") {
 
-            echo json_encode($json, true);
-            return;
+            if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST") {
+                $cursos = new ControladorCursos();
+                $cursos->create();
+
+            } else if(isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "GET") {
+                $cursos = new ControladorCursos();
+                $cursos->index();
+            }
         }
 
-        /*================================================================
-            Cuando se hace peticionens desde regisrto
-        ==================================================================*/
-        if($caso == "registro"){
-            $json = array(
-                #detalle
-                "detalle" => "Estas en la vista registro"
-            );
+        if(array_filter($arrayRutas)[2] == "registro") {
 
-            echo json_encode($json, true);
-            return;
+            if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "GET") {
+                $clientes = new ControladorClientes();
+                $clientes->create();
+            }
+
         }
 
+    }//
+    else {
+
+        if( array_filter($arrayRutas)[2] == "cursos" && is_numeric(array_filter($arrayRutas)[3]) ) {
+            /*================================================================
+                Cuando se hace peticiones GET a cursos mediante un Parametro Identificador
+            ==================================================================*/
+            if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "GET") {
+                $cursos = new ControladorCursos();
+                $cursos->show(array_filter($arrayRutas)[3]);
+            }
+
+            /*================================================================
+                Cuando se hace una Petición PUT
+            ==================================================================*/
+            if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "PUT") {
+                $editarCurso = new ControladorCursos();
+                $editarCurso->update(array_filter($arrayRutas)[3]);
+            }
+
+             /*================================================================
+                Cuando se hace una Petición DELETE
+            ==================================================================*/
+            if (isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "DELETE") {
+                $eliminaCurso = new ControladorCursos();
+                $eliminaCurso->delete(array_filter($arrayRutas)[3]);
+            }
+        }
     }
 }
